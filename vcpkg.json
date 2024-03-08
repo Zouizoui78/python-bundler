@@ -1,0 +1,7 @@
+{
+    "name": "python-launcher",
+    "version": "1.0.0",
+    "dependencies": [
+      "python3"
+    ]
+  }
