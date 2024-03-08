@@ -16,9 +16,5 @@ set(
 
 add_executable(${PROJECT_NAME} ${SRC})
 
-find_package(Python REQUIRED Development)
-
-target_link_libraries(
-    ${PROJECT_NAME}
-    PRIVATE Python::Python
-)
+find_package(Python3 COMPONENTS Development REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Python3::Python)
