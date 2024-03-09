@@ -23,3 +23,8 @@ target_link_libraries(${PROJECT_NAME}-console PRIVATE Python3::Python)
 
 # Hide console
 target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
+
+add_custom_target(
+    dist
+    COMMAND python ${CMAKE_SOURCE_DIR}/scripts/release-package.py $<TARGET_FILE:${PROJECT_NAME}> $<TARGET_FILE:${PROJECT_NAME}-console> ${CMAKE_SOURCE_DIR}/scripts/dist.py
+)
