@@ -86,7 +86,6 @@ def main():
     python_path = os.path.join(output_dir, "python")
     get_python(python_full_version, python_path)
 
-    # TODO : do not copy __pycache__
     shutil.copytree(args.app, os.path.join(output_dir, "app"), ignore=shutil.ignore_patterns("__pycache__"))
     shutil.copy(args.launcher, output_dir)
 

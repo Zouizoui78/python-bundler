@@ -103,4 +103,5 @@ _deps
 build
 app
 python
+dist
 __pycache__
