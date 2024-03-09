@@ -74,8 +74,9 @@ def get_deps(deps: list, python_path: str):
 
 def main():
     args = parse_args()
+    app_name = os.path.basename(args.app)
     if args.output == None:
-        output_dir = Path(os.path.join("dist", os.path.basename(args.app)))
+        output_dir = Path(os.path.join("dist", app_name))
     else:
         output_dir = args.output
 
@@ -94,7 +95,7 @@ def main():
         with open(deps_path, "r") as f:
             get_deps(json.load(f), python_path)
 
-    shutil.make_archive(output_dir, "zip", output_dir)
+    shutil.make_archive(output_dir, "zip", root_dir=output_dir.parent, base_dir=app_name)
 
 if __name__ == "__main__":
     main()
