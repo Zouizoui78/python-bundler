@@ -39,11 +39,17 @@ def parse_args():
     )
     return argparser.parse_args()
 
-def get_python(python_version: str, python_path: str):
-    python_url = f"https://www.python.org/ftp/python/{python_version}/python-{python_version}-embed-amd64.zip"
+def get_python(python_full_version: str, python_release: str, python_path: str):
+    python_url = f"https://www.python.org/ftp/python/{python_full_version}/python-{python_full_version}-embed-amd64.zip"
     python_zip = python_path + ".zip"
     urlretrieve(python_url, python_zip)
     shutil.unpack_archive(python_zip, python_path)
+
+    lib_zip = os.path.join(python_path, f"python{python_release}.zip")
+    lib_path = os.path.join(python_path, f"Lib")
+    shutil.unpack_archive(lib_zip, lib_path)
+
+    os.remove(lib_zip)
     os.remove(python_zip)
 
 def get_tkinter(python_path: str):
@@ -94,8 +100,9 @@ def main():
     output_dir.mkdir(parents=True, exist_ok=True)
 
     python_full_version = f"{sys.version_info.major}.{sys.version_info.minor}.{sys.version_info.micro}"
+    python_release = f"{sys.version_info.major}{sys.version_info.minor}"
     python_path = os.path.join(output_dir, "python")
-    get_python(python_full_version, python_path)
+    get_python(python_full_version, python_release, python_path)
 
     shutil.copytree(args.app, os.path.join(output_dir, "app"), ignore=shutil.ignore_patterns("__pycache__"))
     shutil.copy(args.launcher, os.path.join(output_dir, app_name + ".exe"))

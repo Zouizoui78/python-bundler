@@ -22,7 +22,7 @@ int main(int argc, char** argv) {
     PyConfig_InitIsolatedConfig(&config);
 
     auto python_home = std::filesystem::current_path() / "python";
-    auto python_zip = python_home / "python312.zip";
+    auto python_lib = python_home / "Lib";
 
     // Set home directory to prevent python from adding its default sys.path.
     // With this sys.path will only contain :
@@ -38,7 +38,7 @@ int main(int argc, char** argv) {
 
     // Add standard python libs to sys.path.
     status = PyWideStringList_Append(&config.module_search_paths,
-                                     python_zip.wstring().c_str());
+                                     python_lib.wstring().c_str());
     check_status(status, config);
 
     std::filesystem::path script{argc == 1 ? "app/main.py" : argv[1]};
