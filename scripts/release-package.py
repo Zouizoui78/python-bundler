@@ -13,3 +13,4 @@ for file in sys.argv[1:]:
     shutil.copy(file, dist_dir)
 
 shutil.make_archive(dist_dir, "zip", dist_dir)
+shutil.rmtree(dist_dir)
