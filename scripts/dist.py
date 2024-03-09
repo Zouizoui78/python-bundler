@@ -32,6 +32,11 @@ def parse_args():
         "--output",
         help="Path to the output directory."
     )
+    argparser.add_argument(
+        "-n",
+        "--name",
+        help="Name of the application. Defaults to the name of the app directory."
+    )
     return argparser.parse_args()
 
 def get_python(python_version: str, python_path: str):
@@ -74,7 +79,12 @@ def get_deps(deps: list, python_path: str):
 
 def main():
     args = parse_args()
-    app_name = os.path.basename(args.app)
+
+    if args.name == None:
+        app_name = os.path.basename(args.app)
+    else:
+        app_name = args.name
+
     if args.output == None:
         output_dir = Path(os.path.join("dist", app_name))
     else:
