@@ -101,4 +101,5 @@ _deps
 
 .vscode
 build
-__pycache__
+app
+python
