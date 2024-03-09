@@ -28,7 +28,10 @@ int main(int argc, char** argv) {
     // With this sys.path will only contain :
     //      - the working directory from which the executable is launched
     //      - paths manually added with PyWideStringList_Append()
-    PyConfig_SetString(&config, &config.home, python_home.wstring().c_str());
+    //      - existing site directories
+    status = PyConfig_SetString(&config, &config.home,
+                                python_home.wstring().c_str());
+    check_status(status, config);
 
     // Tell Py_InitializeFromConfig() to not modify config.module_search_paths.
     config.module_search_paths_set = 1;
@@ -46,7 +49,7 @@ int main(int argc, char** argv) {
                                     script.parent_path().wstring().c_str());
         check_status(status, config);
 
-        // Run app/main.py instead of interpreter's main.
+        // Run target script instead of interpreter's main.
         status = PyConfig_SetString(&config, &config.run_filename,
                                     script.wstring().c_str());
         check_status(status, config);
