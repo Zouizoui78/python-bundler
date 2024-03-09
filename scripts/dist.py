@@ -9,9 +9,7 @@ from urllib.request import urlretrieve
 
 def parse_args():
     argparser = argparse.ArgumentParser(
-        description="Build the distributable package. If the packaged application " +
-        "contains a file called 'main.py', " +
-        "this file is executed automatically by the launcher."
+        description="Build the distributable package. If the packaged application contains a file called 'deps.json', the list of string it contains is used to get dependencies using pip."
     )
     argparser.add_argument(
         "-a",
