@@ -88,7 +88,7 @@ def main():
     get_python(python_full_version, python_path)
 
     shutil.copytree(args.app, os.path.join(output_dir, "app"), ignore=shutil.ignore_patterns("__pycache__"))
-    shutil.copy(args.launcher, output_dir)
+    shutil.copy(args.launcher, os.path.join(output_dir, app_name + ".exe"))
 
     deps_path = os.path.join(args.app, "deps.json")
     if os.path.exists(deps_path):
