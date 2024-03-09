@@ -38,15 +38,17 @@ int main(int argc, char** argv) {
                                      python_zip.wstring().c_str());
     check_status(status, config);
 
-    std::filesystem::path app_main{"app/main.py"};
-    if (argc == 1 && std::filesystem::exists("app/main.py")) {
-        // add app directory to sys.path
-        status = PyWideStringList_Append(&config.module_search_paths, L"app");
+    std::filesystem::path script{argc == 1 ? "app/main.py" : argv[1]};
+    if (std::filesystem::exists(script)) {
+        // Add app directory to sys.path.
+        status =
+            PyWideStringList_Append(&config.module_search_paths,
+                                    script.parent_path().wstring().c_str());
         check_status(status, config);
 
-        // run app/main.py instead of interpreter's main
+        // Run app/main.py instead of interpreter's main.
         status = PyConfig_SetString(&config, &config.run_filename,
-                                    app_main.wstring().c_str());
+                                    script.wstring().c_str());
         check_status(status, config);
     }
 
@@ -54,5 +56,7 @@ int main(int argc, char** argv) {
     check_status(status, config);
     PyConfig_Clear(&config);
 
+    // Run config.run_filename if it's set.
+    // If not, run the interpreter.
     return Py_RunMain();
 }
