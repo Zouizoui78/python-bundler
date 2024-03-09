@@ -54,10 +54,10 @@ def get_tkinter(python_path: str):
         os.path.join(python_path, "tkinter"),
         ignore=shutil.ignore_patterns("__pycache__")
     )
-    shutil.copyfile(os.path.join(python_dlls_path, "_tkinter.pyd"), os.path.join(python_path, "_tkinter.pyd"))
-    shutil.copyfile(os.path.join(python_dlls_path, "tcl86t.dll"), os.path.join(python_path, "tcl86t.dll"))
-    shutil.copyfile(os.path.join(python_dlls_path, "tk86t.dll"), os.path.join(python_path, "tk86t.dll"))
-    shutil.copyfile(os.path.join(python_dlls_path, "zlib1.dll"), os.path.join(python_path, "zlib1.dll"))
+    shutil.copy(os.path.join(python_dlls_path, "_tkinter.pyd"), python_path)
+    shutil.copy(os.path.join(python_dlls_path, "tcl86t.dll"), python_path)
+    shutil.copy(os.path.join(python_dlls_path, "tk86t.dll"), python_path)
+    shutil.copy(os.path.join(python_dlls_path, "zlib1.dll"), python_path)
 
 def get_pypi_dep(dep_name: str, site_packages_path: str):
     args = [sys.executable, "-m", "pip", "install", dep_name, "--target", site_packages_path]
