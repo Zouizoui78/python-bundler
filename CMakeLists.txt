@@ -15,6 +15,11 @@ set(
 )
 
 add_executable(${PROJECT_NAME} ${SRC})
+add_executable(${PROJECT_NAME}-console ${SRC})
 
 find_package(Python3 COMPONENTS Development REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE Python3::Python)
+target_link_libraries(${PROJECT_NAME}-console PRIVATE Python3::Python)
+
+# Hide console
+target_link_options(${PROJECT_NAME} PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
