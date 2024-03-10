@@ -1,13 +1,13 @@
 # python-bundler
 
-This project's goal is to provide an easy way to bundler a python application into a package that can be executed by people who do not have the interpreter installed.
+This project's goal is to provide an easy way to bundle a python application into a package that can be executed by people who do not have the interpreter installed.
 
 It is composed of two parts :
 
-- A `python-launcher` cmake project that runs the python code in the [isolated interpreter](https://docs.python.org/3/c-api/init_config.html#c.PyConfig.isolated) included in the bundle. This project creates two executables :
+- A `python-launcher` cmake project that runs the python code in an [isolated interpreter](https://docs.python.org/3/c-api/init_config.html#c.PyConfig.isolated) included in the bundle. This project creates two executables :
   - `launcher.exe` is a normal Windows GUI-only program.
   - `launcher-console.exe` opens a terminal when running where logs can be seen.
-- A python script called `bundler.py` that bundles a portable python interpreter, the target app and the wrapper.
+- A python script called `bundler.py` that bundles a portable python interpreter, the target app and the C++ wrapper.
 
 This project is intended for Windows. Unix systems do not need this since they have proper package management systems.
 
@@ -35,7 +35,7 @@ Consider the following folder structure :
         ├── lib.py
         └── main.py
 
-Here the python code is the one from the `test-app` example in this repo, without the dependencies on `tkinter` and `requests`.
+Here the python code is the one from the `test-app` example of this repo, without the dependencies on `tkinter` and `requests`.
 
 We run the following command from `tmp` :
 
