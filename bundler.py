@@ -110,7 +110,6 @@ def main():
         with open(deps_path, "r") as f:
             get_deps(json.load(f), python_path)
 
-    print(output_dir)
     shutil.make_archive(output_dir, "zip", root_dir=output_dir.parent, base_dir=output_dir.name)
 
 if __name__ == "__main__":
