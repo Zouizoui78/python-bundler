@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
     auto bundle_root = std::filesystem::path(argv[0]).parent_path();
     auto app_main = bundle_root / "app" / "main.py";
     auto python_home = bundle_root / "python";
+    auto python_dlls = python_home / "DLLs";
     auto python_lib = python_home / "Lib";
 
     // Set home directory to prevent python from adding its default sys.path.
@@ -38,6 +39,11 @@ int main(int argc, char** argv) {
 
     // Tell Py_InitializeFromConfig() to not modify config.module_search_paths.
     config.module_search_paths_set = 1;
+
+    // Add python DLLs to sys.path.
+    status = PyWideStringList_Append(&config.module_search_paths,
+                                     python_dlls.wstring().c_str());
+    check_status(status, config);
 
     // Add standard python libs to sys.path.
     status = PyWideStringList_Append(&config.module_search_paths,

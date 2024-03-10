@@ -37,6 +37,32 @@ def parse_args():
     )
     return argparser.parse_args()
 
+def belongs_in_dlls_dir(file: str) -> bool:
+    return file.endswith(".pyd") or \
+        file.endswith(".dll") and \
+        "python" not in file and \
+        "vcruntime" not in file
+
+def cleanup_python_install(python_path: str, python_release: str):
+    extensions_to_remove = [".exe", ".cat", "._pth"]
+    dlls_path = Path(os.path.join(python_path, "DLLs"))
+    dlls_path.mkdir()
+
+    for file in os.listdir(python_path):
+        file_path = os.path.join(python_path, file)
+        if belongs_in_dlls_dir(file):
+            os.rename(
+                file_path,
+                os.path.join(dlls_path, file)
+            )
+        elif any([file.endswith(ext) for ext in extensions_to_remove]):
+            os.remove(file_path)
+        elif file.endswith(".dll"):
+            os.rename(
+                file_path,
+                os.path.join(Path(python_path).parent, file)
+            )
+
 def get_python(python_full_version: str, python_release: str, python_path: str):
     python_url = f"https://www.python.org/ftp/python/{python_full_version}/python-{python_full_version}-embed-amd64.zip"
     python_zip = python_path + ".zip"
@@ -111,6 +137,8 @@ def main():
     if os.path.exists(deps_path):
         with open(deps_path, "r") as f:
             get_deps(json.load(f), python_path)
+
+    cleanup_python_install(python_path, python_release)
 
     shutil.make_archive(output_dir, "zip", root_dir=output_dir.parent, base_dir=output_dir.name)
 
