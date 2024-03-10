@@ -14,4 +14,3 @@ for file in sys.argv[1:]:
     shutil.copy(file, dist_dir)
 
 shutil.make_archive(dist_dir, "zip", root_dir=dist_dir.parent, base_dir="python-bundler")
-shutil.rmtree(dist_dir)
