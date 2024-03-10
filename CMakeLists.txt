@@ -11,7 +11,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 set(
     SRC
-    main.cpp
+    launcher.cpp
 )
 
 add_executable(launcher ${SRC})
