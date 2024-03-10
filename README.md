@@ -32,47 +32,48 @@ Consider the following folder structure :
     │   ├── launcher-console.exe
     │   └── launcher.exe
     └── test-app
-        ├── deps.json
         ├── lib.py
         └── main.py
 
+Here the python code is the one from the `test-app` example in this repo, without the dependencies on `tkinter` and `requests`.
+
 We run the following command from `tmp` :
 
-    python .\python-bundler\bundler.py --app .\test-app\ --launcher .\python-bundler\launcher-console.exe --output bundle
+    python .\python-bundler\bundler.py --app .\test-app\ --launcher .\python-bundler\launcher-console.exe --output dist\bundle
 
 We now have the following folder structure :
 
     tmp
-    ├── bundle // Our bundled package
-    │   ├── app // Dir containing our python code
-    │   ├── python // The portable python distribution
-    │   └── test-app.exe // The renamed launcher-console.exe
-    ├── bundle.zip
+    ├── dist
+    │   ├── bundle // Our bundled package
+    │   │   ├── app // Our python code
+    │   │   ├── python // The portable python distribution
+    │   │   └── test-app.exe // The renamed launcher-console.exe
+    │   └── bundle.zip
     ├── python-bundler
     │   ├── bundler.py
     │   ├── launcher-console.exe
     │   └── launcher.exe
     └── test-app
-        ├── deps.json
         ├── lib.py
         └── main.py
 
 We can then run `test-app.exe` from anywhere and it will run the python script `bundle/app/main.py` using the bundled python interpreter :
 
-    tmp> .\bundle\test-app.exe
+    tmp> .\dist\bundle\test-app.exe
     hi from lib
-    __file__ = C:\dev\tmp\bundle\app\main.py
+    __file__ = C:\dev\tmp\dist\bundle\app\main.py
     sys.path = [
-        C:\dev\tmp\bundle\python\Lib,
-        C:\dev\tmp\bundle\app,
-        C:\dev\tmp\bundle\python,
-        C:\dev\tmp\bundle\python\Lib\site-packages
+        C:\dev\tmp\dist\bundle\python\Lib,
+        C:\dev\tmp\dist\bundle\app,
+        C:\dev\tmp\dist\bundle\python,
+        C:\dev\tmp\dist\bundle\python\Lib\site-packages
     ]
-    prefix = C:\dev\tmp\bundle\python
-    executable = C:\dev\tmp\bundle\test-app.exe
+    prefix = C:\dev\tmp\dist\bundle\python
+    executable = C:\dev\tmp\dist\bundle\test-app.exe
     site-packages = [
-        C:\dev\tmp\bundle\python,
-        C:\dev\tmp\bundle\python\Lib\site-packages
+        C:\dev\tmp\dist\bundle\python,
+        C:\dev\tmp\dist\bundle\python\Lib\site-packages
     ]
 
 ## What does the launcher executes
