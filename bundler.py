@@ -28,12 +28,12 @@ def parse_args():
     argparser.add_argument(
         "-o",
         "--output",
-        help="Path to the output directory."
+        help="Path to the output directory. Defaults to 'bundle'."
     )
     argparser.add_argument(
         "-n",
         "--name",
-        help="Name of the application. Defaults to the name of the app directory."
+        help="Name of the application. Defaults to the name of the app directory, or, if set, to the name of the output directory."
     )
     return argparser.parse_args()
 
@@ -84,10 +84,12 @@ def get_deps(deps: list, python_path: str):
 def main():
     args = parse_args()
 
-    if args.name == None:
-        app_name = os.path.basename(args.app)
-    else:
+    if args.name != None:
         app_name = args.name
+    elif args.output != None:
+        app_name = os.path.basename(args.output)
+    else:
+        app_name = os.path.basename(args.app)
 
     if args.output == None:
         output_dir = Path("bundle")
