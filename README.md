@@ -47,7 +47,11 @@ We now have the following folder structure :
     ├── bundle // Our bundled package
     │   ├── app // Our python code
     │   ├── python // The portable python distribution
-    │   └── test-app.exe
+    │   ├── python312.dll
+    │   ├── python3.dll
+    │   ├── test-app.exe
+    │   ├── vcruntime140_1.dll
+    │   └── vcruntime140.dll
     ├── bundle.zip
     ├── python-bundler
     │   ├── bundler.py
