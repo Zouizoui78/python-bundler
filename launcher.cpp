@@ -28,9 +28,10 @@ int main(int argc, char** argv) {
 
     // Set home directory to prevent python from adding its default sys.path.
     // With this sys.path will only contain :
-    //      - the working directory from which the executable is launched
     //      - paths manually added with PyWideStringList_Append()
-    //      - existing site directories
+    //      - existing site-packages directories, in our case :
+    //          - the python directory
+    //          - <python directory>/Lib/site-packages
     status = PyConfig_SetString(&config, &config.home,
                                 python_home.wstring().c_str());
     check_status(status, config);
