@@ -1,42 +1,96 @@
-# python-launcher
+# python-bundler
 
-Simply bundle a python application to make it usable by user who do not have the interpreter installed.
+This project's goal is to provide an easy way to bundler a python application into a package that can be executed by people who do not have the interpreter installed.
 
-This project is built for Windows. Unix systems do not need this since they have proper dependency management systems.
+It is composed of two parts :
 
-The script requires a working python install to get the targeted python version from and to get dependencies with pip.
+- A `python-launcher` cmake project that runs the python code in the [isolated interpreter](https://docs.python.org/3/c-api/init_config.html#c.PyConfig.isolated) included in the bundle. This project creates two executables :
+  - `launcher.exe` is a normal Windows GUI-only program.
+  - `launcher-console.exe` opens a terminal when running where logs can be seen.
+- A python script called `bundler.py` that bundles a portable python interpreter, the target app and the wrapper.
+
+This project is intended for Windows. Unix systems do not need this since they have proper package management systems.
+
+`bundler.py` requires a working python install to get the targeted python version from and to get dependencies with pip.
+
+## Build
+
+Make sure you have python installed and available in the path. Then build the project :
+
+    cmake -B build
+    cmake --build build --target dist --config release
+
+After that you get the archive `build/dist/python-bundler.zip` that contains the bundler script and the two versions of the launcher.
 
 ## How to use
 
-1. Make sure you have python installed and available in the path.
-2. Build the project.
-3. Run the dist.py script.
+Consider the following folder structure :
+
+    tmp
+    ├── python-bundler
+    │   ├── bundler.py
+    │   ├── launcher-console.exe
+    │   └── launcher.exe
+    └── test-app
+        ├── deps.json
+        ├── lib.py
+        └── main.py
+
+We run the following command from `tmp` :
+
+    python .\python-bundler\bundler.py --app .\test-app\ --launcher .\python-bundler\launcher-console.exe --output bundle
+
+We now have the following folder structure :
+
+    tmp
+    ├── bundle // Our bundled package
+    │   ├── app // Dir containing our python code
+    │   ├── python // The portable python distribution
+    │   └── test-app.exe // The renamed launcher-console.exe
+    ├── bundle.zip
+    ├── python-bundler
+    │   ├── bundler.py
+    │   ├── launcher-console.exe
+    │   └── launcher.exe
+    └── test-app
+        ├── deps.json
+        ├── lib.py
+        └── main.py
+
+We can then run `test-app.exe` from anywhere and it will run the python script `bundle/app/main.py` using the bundled python interpreter :
+
+    tmp> .\bundle\test-app.exe
+    hi from lib
+    __file__ = C:\dev\tmp\bundle\app\main.py
+    sys.path = [
+        C:\dev\tmp\bundle\python\Lib,
+        C:\dev\tmp\bundle\app,
+        C:\dev\tmp\bundle\python,
+        C:\dev\tmp\bundle\python\Lib\site-packages
+    ]
+    prefix = C:\dev\tmp\bundle\python
+    executable = C:\dev\tmp\bundle\test-app.exe
+    site-packages = [
+        C:\dev\tmp\bundle\python,
+        C:\dev\tmp\bundle\python\Lib\site-packages
+    ]
 
 ## What does the launcher executes
 
 There are three cases:
 
-- If the app directory contains a `main.py` file, it is executed.
-- If the app directory contains no `main.py` file and no CLI argument is provided, the launcher simply calls the interpreter's `main` function. If running the console launcher, you will simply get a python prompt.
-- If the app directory contains no `main.py` file and a CLI argument is provided, it is used as the path to a script to execute.
-
-## Difference between the two launchers
-
-When building the project, you get two launcher : `python-launcher.exe` and `python-launcher-console.exe`. The latter opens a terminal when running.
+- If `app/main.py` exists, it is executed.
+- If `app/main.py` does not exist and no CLI argument is provided, the launcher simply calls the interpreter's `main` function. If running the console launcher, you will simply get a python prompt.
+- If `app/main.py` does not exist and a CLI argument is provided, it is used as the path to a script to execute.
 
 ## Dependencies
 
 If the packaged application contains a file called `deps.json`, the list of string it
-contains is used to get dependencies using pip. For example with the following json :
+contains is used to get dependencies using pip. For instance, with the following json :
 
     [
         "tkinter",
         "requests"
     ]
 
-`dist.py` would install `tkinter` from the system python install and `requests` using `pip`.
-
-## Build
-
-    cmake -B build
-    cmake --build build --target dist --config release
+`bundler.py` would install `tkinter` from the system python install and `requests` using `pip`.
