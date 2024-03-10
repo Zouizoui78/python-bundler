@@ -90,9 +90,9 @@ def main():
         app_name = args.name
 
     if args.output == None:
-        output_dir = Path(os.path.join("dist", app_name))
+        output_dir = Path("bundle")
     else:
-        output_dir = args.output
+        output_dir = Path(args.output)
 
     shutil.rmtree(output_dir, ignore_errors=True)
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -110,7 +110,8 @@ def main():
         with open(deps_path, "r") as f:
             get_deps(json.load(f), python_path)
 
-    shutil.make_archive(output_dir, "zip", root_dir=output_dir.parent, base_dir=app_name)
+    print(output_dir)
+    shutil.make_archive(output_dir, "zip", root_dir=output_dir.parent, base_dir=output_dir.name)
 
 if __name__ == "__main__":
     main()
