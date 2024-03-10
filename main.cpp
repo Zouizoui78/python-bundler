@@ -21,7 +21,9 @@ int main(int argc, char** argv) {
     //      - ignore user site directory
     PyConfig_InitIsolatedConfig(&config);
 
-    auto python_home = std::filesystem::current_path() / "python";
+    auto bundle_root = std::filesystem::path(argv[0]).parent_path();
+    auto app_main = bundle_root / "app" / "main.py";
+    auto python_home = bundle_root / "python";
     auto python_lib = python_home / "Lib";
 
     // Set home directory to prevent python from adding its default sys.path.
@@ -41,7 +43,7 @@ int main(int argc, char** argv) {
                                      python_lib.wstring().c_str());
     check_status(status, config);
 
-    std::filesystem::path script{argc == 1 ? "app/main.py" : argv[1]};
+    std::filesystem::path script{argc == 1 ? app_main : argv[1]};
     if (std::filesystem::exists(script)) {
         // Add app directory to sys.path.
         status =
