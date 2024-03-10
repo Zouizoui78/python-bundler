@@ -39,17 +39,16 @@ Here the python code is the one from the `test-app` example of this repo, withou
 
 We run the following command from `tmp` :
 
-    python .\python-bundler\bundler.py --app .\test-app\ --launcher .\python-bundler\launcher-console.exe --output dist\bundle
+    python .\python-bundler\bundler.py --app .\test-app\ --launcher .\python-bundler\launcher-console.exe
 
 We now have the following folder structure :
 
     tmp
-    ├── dist
-    │   ├── bundle // Our bundled package
-    │   │   ├── app // Our python code
-    │   │   ├── python // The portable python distribution
-    │   │   └── test-app.exe // The renamed launcher-console.exe
-    │   └── bundle.zip
+    ├── bundle // Our bundled package
+    │   ├── app // Our python code
+    │   ├── python // The portable python distribution
+    │   └── test-app.exe
+    ├── bundle.zip
     ├── python-bundler
     │   ├── bundler.py
     │   ├── launcher-console.exe
