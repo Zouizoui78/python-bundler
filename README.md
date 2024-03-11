@@ -49,7 +49,7 @@ We now have the following folder structure :
     │   ├── python // The portable python distribution
     │   ├── python312.dll
     │   ├── python3.dll
-    │   ├── test-app.exe
+    │   ├── test-app.exe // The launcher (renamed)
     │   ├── vcruntime140_1.dll
     │   └── vcruntime140.dll
     ├── bundle.zip
