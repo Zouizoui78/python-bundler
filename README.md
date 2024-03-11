@@ -15,8 +15,16 @@ This project is intended for Windows. Unix systems do not need this since they h
 
 ## Build
 
-Make sure you have python installed and available in the path. Then build the project :
+You need the following to build the wrapper :
 
+- MSVC with support for C++17 for (`std::filesystem`)
+- CMake >= 3.5
+- Python
+
+Clone and build the project :
+
+    git clone https://github.com/Zouizoui78/python-bundler.git
+    cd python-launcher
     cmake -B build
     cmake --build build --target dist --config release
 
