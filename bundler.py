@@ -9,6 +9,9 @@ from urllib.request import urlretrieve
 PYTHON_FULL_VERSION = "{}.{}.{}".format(sys.version_info.major, sys.version_info.minor, sys.version_info.micro)
 PYTHON_RELEASE = int("{}{}".format(sys.version_info.major, sys.version_info.minor))
 
+CACHE_DIR = os.path.join(os.path.dirname(sys.argv[0]), ".python-bundler-cache")
+CACHED_PYTHON_ZIP = os.path.join(CACHE_DIR, "python{}.zip".format(PYTHON_RELEASE))
+
 
 def parse_args():
     argparser = argparse.ArgumentParser(
@@ -77,20 +80,25 @@ def print_download_progress_bar(chunk_n: int, chunk_size: int, total_size: int):
         print()
 
 
-def get_portable_python(python_path: str):
+def download_python():
     python_url = "https://www.python.org/ftp/python/{}/python-{}-embed-amd64.zip".format(PYTHON_FULL_VERSION, PYTHON_FULL_VERSION)
-    print("Downloading '{}'".format(python_url))
-    python_zip = python_path + ".zip"
-    urlretrieve(python_url, python_zip, reporthook=print_download_progress_bar)
-    shutil.unpack_archive(python_zip, python_path)
+    print("Downloading '{}' to '{}'".format(python_url, CACHED_PYTHON_ZIP))
+    urlretrieve(python_url, CACHED_PYTHON_ZIP, reporthook=print_download_progress_bar)
+
+
+def get_portable_python(python_path: str):
+    if not os.path.exists(CACHED_PYTHON_ZIP):
+        os.makedirs(CACHE_DIR, exist_ok=True)
+        download_python()
+    else:
+        print("Using cached {}".format(CACHED_PYTHON_ZIP))
+    shutil.unpack_archive(CACHED_PYTHON_ZIP, python_path)
 
     lib_zip = os.path.join(python_path, "python{}.zip".format(PYTHON_RELEASE))
     lib_path = os.path.join(python_path, "Lib")
     shutil.unpack_archive(lib_zip, lib_path)
 
     os.remove(lib_zip)
-    os.remove(python_zip)
-    print("Download done\n")
 
 
 def get_tkinter_from_system_python(python_path: str):
@@ -131,6 +139,7 @@ def get_dependencies(deps: list, python_path: str):
             get_dep_from_pypi(dep, site_packages_path)
         print()
     print("Done installing dependencies")
+    print()
 
 
 def main():
@@ -141,11 +150,12 @@ def main():
     if (args.app[-1] == os.sep):
         args.app = args.app[:-1]
 
-    app_name = os.path.basename(args.app)
     if args.name != None:
         app_name = args.name
     elif args.output != None:
         app_name = os.path.basename(args.output)
+    else:
+        app_name = os.path.basename(args.app)
 
     if args.output == None:
         output_dir = "bundle/{}".format(app_name)
@@ -181,7 +191,6 @@ def main():
 
     cleanup_python_install(python_path)
 
-    print()
     print("Creating archive '{}.zip'".format(output_dir))
     shutil.make_archive(
         output_dir,
