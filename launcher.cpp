@@ -28,13 +28,13 @@ int main(int argc, char** argv) {
 
     Py_Initialize();
 
-    const int args_size = 4;
+    // Don't pass the last argument if app/main.py doesn't exist.
+    // In that case the interpreter will show its interactive prompt.
+    const int args_size = std::filesystem::exists(app_main) ? 4 : 3;
     wchar_t* args[] = {exe.data(),
                        L"-E", // Ignore PYTHON* environment variables.
                        L"-s", // Don't add user site directory to sys.path.
                        app_main.data()};
 
-    // Don't pass the last argument if app/main.py doesn't exist.
-    // In that case the interpreter will show its interactive prompt.
-    Py_Main(std::filesystem::exists(app_main) ? args_size : 3, args);
+    Py_Main(args_size, args);
 }
