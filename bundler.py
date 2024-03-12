@@ -126,7 +126,7 @@ def get_dependencies(deps: list, python_path: str):
         if dep == "tkinter":
             get_tkinter_from_system_python(python_path)
         else:
-            site_packages_path = python_path, "Lib/site-packages"
+            site_packages_path = os.path.join(python_path, "Lib/site-packages")
             os.makedirs(site_packages_path, exist_ok=True)
             get_dep_from_pypi(dep, site_packages_path)
         print()
