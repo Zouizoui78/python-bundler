@@ -6,10 +6,10 @@ import sys
 lib.say_hi()
 
 print(f"__file__ = {__file__}")
-print(f"sys.path = {lib.pretty_list_dump(sys.path)}")
+print(f"sys.path = {sys.path}")
 print(f"prefix = {sys.prefix}")
 print(f"executable = {sys.executable}")
-print(f"site-packages = {lib.pretty_list_dump(site.getsitepackages())}")
+print(f"site-packages = {site.getsitepackages()}")
 
 r = requests.get("http://example.com")
 print(f"http request status code = {r.status_code}")

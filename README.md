@@ -6,10 +6,10 @@ It is composed of two parts :
 
 - The C++ project `python-launcher` that runs the Python code in a portable interpreter included in the bundle. This project creates two executables :
   - `launcher.exe` is a normal Windows GUI-only program.
-  - `launcher-console.exe` opens a terminal when running.
+  - `launcher-console.exe` is a console program.
 - The Python script `bundler.py` that bundles the portable Python interpreter, the target app and the C++ wrapper.
 
-The launcher uses Python's [stable ABI](https://docs.python.org/3/c-api/stable.html#stable-abi) so it should work with all versions of Python >= 3.2.
+The launcher uses Python's [stable ABI](https://docs.python.org/3/c-api/stable.html#stable-abi) so it should work with all versions of Python 3.x >= 3.2 (when the stable ABI was introduced).
 
 This project is intended for Windows. Unix systems do not need this since they have proper package management systems.
 
@@ -21,7 +21,9 @@ The Python version requirement comes from the fact that Python didn't ship an em
 
 ## How to use
 
-Consider the following folder structure :
+Download the bundler from the [releases](https://github.com/Zouizoui78/python-bundler/releases/latest) and extract the files somewhere.
+
+Let's consider the following folder structure as an example. The `test-app` is the one from the root of this project.
 
     tmp
     ├── python-bundler
@@ -29,10 +31,9 @@ Consider the following folder structure :
     │   ├── launcher-console.exe
     │   └── launcher.exe
     └── test-app
+        ├── deps.json
         ├── lib.py
         └── main.py
-
-Here the Python code is the one from the `test-app` example of this repo, without the dependencies on `tkinter` and `requests`.
 
 We run the following command from `tmp` :
 
@@ -41,44 +42,31 @@ We run the following command from `tmp` :
 We now have the following folder structure :
 
     tmp
-    ├── bundle // Our bundled package
-    │   ├── app // Our python code
-    │   ├── python // The portable python distribution
-    │   ├── python312.dll
-    │   ├── python3.dll
-    │   ├── test-app.exe // The launcher (renamed)
-    │   ├── vcruntime140_1.dll
-    │   └── vcruntime140.dll
-    ├── bundle.zip
+    ├── bundle
+    │   ├── test-app // Our bundled package
+    │   │   ├── app // Our python code
+    │   │   ├── python // The portable python distribution
+    │   │   ├── test-app.exe // The launcher (renamed)
+    │   │   └── <some DLLs>
+    │   └── test-app.zip // The zipped bundle
     ├── python-bundler
     │   ├── bundler.py
     │   ├── launcher-console.exe
     │   └── launcher.exe
     └── test-app
+        ├── deps.json
         ├── lib.py
         └── main.py
 
-We can then run `test-app.exe` from anywhere and it will run the Python script `bundle/app/main.py` using the bundled Python interpreter :
+We can then run `test-app.exe` from anywhere and it will run the Python script `bundle/test-app/app/main.py` using the bundled Python interpreter :
 
-    tmp> .\dist\bundle\test-app.exe
-    hi from lib
-    __file__ = C:\dev\tmp\dist\bundle\app\main.py
-    sys.path = [
-        C:\dev\tmp\dist\bundle\python\Lib,
-        C:\dev\tmp\dist\bundle\app,
-        C:\dev\tmp\dist\bundle\python,
-        C:\dev\tmp\dist\bundle\python\Lib\site-packages
-    ]
-    prefix = C:\dev\tmp\dist\bundle\python
-    executable = C:\dev\tmp\dist\bundle\test-app.exe
-    site-packages = [
-        C:\dev\tmp\dist\bundle\python,
-        C:\dev\tmp\dist\bundle\python\Lib\site-packages
-    ]
+    .\bundle\test-app\test-app.exe
+
+The script should output some text and open an empty window.
 
 ### Dependencies
 
-If the packaged application contains a file called `deps.json`, the list of string it
+If the packaged application contains a file called `deps.json`, the list of strings it
 contains is used to get dependencies using `pip`. For instance, with the following json :
 
     [
@@ -89,8 +77,6 @@ contains is used to get dependencies using `pip`. For instance, with the followi
 `bundler.py` would install `tkinter` from the system Python install and `requests` using `pip`.
 
 ## What does the launcher execute
-
-There are three cases:
 
 - If `app/main.py` exists, it is executed.
 - If `app/main.py` does not exist, the launcher calls the interpreter's `main` function. If running the console launcher, you will get a Python prompt.
