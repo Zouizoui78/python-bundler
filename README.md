@@ -4,16 +4,20 @@ This project's goal is to provide an easy way to bundle a Python application int
 
 It is composed of two parts :
 
-- A `python-launcher` cmake project that runs the Python code in an [isolated interpreter](https://docs.python.org/3/c-api/init_config.html#c.PyConfig.isolated) included in the bundle. This project creates two executables :
+- The C++ project `python-launcher` that runs the Python code in a portable interpreter included in the bundle. This project creates two executables :
   - `launcher.exe` is a normal Windows GUI-only program.
-  - `launcher-console.exe` opens a terminal when running where logs can be seen.
-- A Python script called `bundler.py` that bundles a portable Python interpreter, the target app and the C++ wrapper.
+  - `launcher-console.exe` opens a terminal when running.
+- The Python script `bundler.py` that bundles the portable Python interpreter, the target app and the C++ wrapper.
 
-The launcher use Python's [stable abi](https://docs.python.org/3/c-api/stable.html#stable-abi) so it should work with all versions of Python >= 3.2.
+The launcher uses Python's [stable ABI](https://docs.python.org/3/c-api/stable.html#stable-abi) so it should work with all versions of Python >= 3.2.
 
 This project is intended for Windows. Unix systems do not need this since they have proper package management systems.
 
-`bundler.py` requires a working Python >= 3.5 install to get the targeted Python version from and to get dependencies with pip. The version requirement comes from the fact that Python didn't ship an embeddable distribution before 3.5.
+## Requirements
+
+- Python >= 3.5 installed and available in the path
+
+The Python version requirement comes from the fact that Python didn't ship an embeddable distribution before 3.5.
 
 ## How to use
 
@@ -72,17 +76,10 @@ We can then run `test-app.exe` from anywhere and it will run the Python script `
         C:\dev\tmp\dist\bundle\python\Lib\site-packages
     ]
 
-## What does the launcher executes
-
-There are three cases:
-
-- If `app/main.py` exists, it is executed.
-- If `app/main.py` does not exist, the launcher calls the interpreter's `main` function. If running the console launcher, you will get a Python prompt.
-
-## Dependencies
+### Dependencies
 
 If the packaged application contains a file called `deps.json`, the list of string it
-contains is used to get dependencies using pip. For instance, with the following json :
+contains is used to get dependencies using `pip`. For instance, with the following json :
 
     [
         "tkinter",
@@ -91,12 +88,19 @@ contains is used to get dependencies using pip. For instance, with the following
 
 `bundler.py` would install `tkinter` from the system Python install and `requests` using `pip`.
 
+## What does the launcher execute
+
+There are three cases:
+
+- If `app/main.py` exists, it is executed.
+- If `app/main.py` does not exist, the launcher calls the interpreter's `main` function. If running the console launcher, you will get a Python prompt.
+
 ## Build
 
 You need the following to build the wrapper :
 
 - MSVC with support for C++17 for `std::filesystem`
-- CMake >= 3.5
+- CMake >= 3.26 for the `Development.SABIModule` component of `FindPython`
 - Python >= 3.2 for the stable ABI
 
 Clone and build the project :
