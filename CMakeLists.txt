@@ -17,9 +17,9 @@ set(
 add_executable(launcher ${SRC})
 add_executable(launcher-console ${SRC})
 
-find_package(Python3 COMPONENTS Development REQUIRED)
-target_link_libraries(launcher PRIVATE Python3::Python)
-target_link_libraries(launcher-console PRIVATE Python3::Python)
+find_package(Python3 COMPONENTS Development.SABIModule REQUIRED)
+target_link_libraries(launcher PRIVATE Python3::SABIModule)
+target_link_libraries(launcher-console PRIVATE Python3::SABIModule)
 
 # Hide console
 target_link_options(launcher PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
