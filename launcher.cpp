@@ -11,16 +11,20 @@ int main(int argc, char** argv) {
     std::wstring app_main = (bundle_root / "app" / "main.py").wstring();
     std::wstring python_home = (bundle_root / "python").wstring();
 
+#if PY_MINOR_VERSION >= 11
+// The two following functions are deprecated since Python 3.11.
+// However being part of the stable ABI they will continue to work.
+// See last paragraph of https://peps.python.org/pep-0652/#stable-abi
+// The worst case scenario is that they can end up leaking memory,
+// but that's not an issue here since they are only used once.
 #pragma warning(push)
 #pragma warning(disable : 4996)
-    // These two functions are deprecated since python 3.11.
-    // However being part of the stable ABI they will continue to work.
-    // See last paragraph of https://peps.python.org/pep-0652/#stable-abi
-    // The worst case scenario is that they can end up leaking memory,
-    // but that's not an issue here since they are only used once.
-    Py_SetProgramName(exe.c_str());
-    Py_SetPythonHome(python_home.c_str());
+#endif
+    Py_SetProgramName(exe.data());
+    Py_SetPythonHome(python_home.data());
+#if PY_MINOR_VERSION >= 11
 #pragma warning(pop)
+#endif
 
     Py_Initialize();
 
