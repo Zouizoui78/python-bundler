@@ -1,34 +1,19 @@
 # python-bundler
 
-This project's goal is to provide an easy way to bundle a python application into a package that can be executed by people who do not have the interpreter installed.
+This project's goal is to provide an easy way to bundle a Python application into a package that can be executed by people who do not have the interpreter installed.
 
 It is composed of two parts :
 
-- A `python-launcher` cmake project that runs the python code in an [isolated interpreter](https://docs.python.org/3/c-api/init_config.html#c.PyConfig.isolated) included in the bundle. This project creates two executables :
+- A `python-launcher` cmake project that runs the Python code in an [isolated interpreter](https://docs.python.org/3/c-api/init_config.html#c.PyConfig.isolated) included in the bundle. This project creates two executables :
   - `launcher.exe` is a normal Windows GUI-only program.
   - `launcher-console.exe` opens a terminal when running where logs can be seen.
-- A python script called `bundler.py` that bundles a portable python interpreter, the target app and the C++ wrapper.
+- A Python script called `bundler.py` that bundles a portable Python interpreter, the target app and the C++ wrapper.
+
+The launcher use Python's [stable abi](https://docs.python.org/3/c-api/stable.html#stable-abi) so it should work with all versions of Python >= 3.2.
 
 This project is intended for Windows. Unix systems do not need this since they have proper package management systems.
 
-`bundler.py` requires a working python install to get the targeted python version from and to get dependencies with pip.
-
-## Build
-
-You need the following to build the wrapper :
-
-- MSVC with support for C++17 for (`std::filesystem`)
-- CMake >= 3.5
-- Python
-
-Clone and build the project :
-
-    git clone https://github.com/Zouizoui78/python-bundler.git
-    cd python-launcher
-    cmake -B build
-    cmake --build build --target dist --config release
-
-After that you get the archive `build/dist/python-bundler.zip` that contains the bundler script and the two versions of the launcher.
+`bundler.py` requires a working Python >= 3.5 install to get the targeted Python version from and to get dependencies with pip. The version requirement comes from the fact that Python didn't ship an embeddable distribution before 3.5.
 
 ## How to use
 
@@ -43,7 +28,7 @@ Consider the following folder structure :
         ├── lib.py
         └── main.py
 
-Here the python code is the one from the `test-app` example of this repo, without the dependencies on `tkinter` and `requests`.
+Here the Python code is the one from the `test-app` example of this repo, without the dependencies on `tkinter` and `requests`.
 
 We run the following command from `tmp` :
 
@@ -69,7 +54,7 @@ We now have the following folder structure :
         ├── lib.py
         └── main.py
 
-We can then run `test-app.exe` from anywhere and it will run the python script `bundle/app/main.py` using the bundled python interpreter :
+We can then run `test-app.exe` from anywhere and it will run the Python script `bundle/app/main.py` using the bundled Python interpreter :
 
     tmp> .\dist\bundle\test-app.exe
     hi from lib
@@ -92,8 +77,7 @@ We can then run `test-app.exe` from anywhere and it will run the python script `
 There are three cases:
 
 - If `app/main.py` exists, it is executed.
-- If `app/main.py` does not exist and no CLI argument is provided, the launcher simply calls the interpreter's `main` function. If running the console launcher, you will simply get a python prompt.
-- If `app/main.py` does not exist and a CLI argument is provided, it is used as the path to a script to execute.
+- If `app/main.py` does not exist, the launcher calls the interpreter's `main` function. If running the console launcher, you will get a Python prompt.
 
 ## Dependencies
 
@@ -105,4 +89,21 @@ contains is used to get dependencies using pip. For instance, with the following
         "requests"
     ]
 
-`bundler.py` would install `tkinter` from the system python install and `requests` using `pip`.
+`bundler.py` would install `tkinter` from the system Python install and `requests` using `pip`.
+
+## Build
+
+You need the following to build the wrapper :
+
+- MSVC with support for C++17 for `std::filesystem`
+- CMake >= 3.5
+- Python >= 3.2 for the stable ABI
+
+Clone and build the project :
+
+    git clone https://github.com/Zouizoui78/python-bundler.git
+    cd python-launcher
+    cmake -B build
+    cmake --build build --target dist --config release
+
+The `dist` target creates the archive `build/dist/python-bundler.zip` that contains the bundler script and the two versions of the launcher.

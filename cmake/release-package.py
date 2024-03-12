@@ -1,16 +1,19 @@
 import os
-from pathlib import Path
 import shutil
 import sys
 
 if len(sys.argv) == 1:
     exit(-1)
 
-dist_dir = Path(os.path.join("dist", "python-bundler"))
+dist_dir = os.path.join("dist", "python-bundler")
 shutil.rmtree(dist_dir, ignore_errors=True)
-dist_dir.mkdir(parents=True, exist_ok=True)
+os.makedirs(dist_dir)
 
 for file in sys.argv[1:]:
     shutil.copy(file, dist_dir)
 
-shutil.make_archive(dist_dir, "zip", root_dir=dist_dir.parent, base_dir="python-bundler")
+shutil.make_archive(
+    dist_dir, "zip",
+    root_dir=os.path.join(dist_dir, os.pardir),
+    base_dir="python-bundler"
+)
