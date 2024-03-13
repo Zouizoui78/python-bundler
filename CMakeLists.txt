@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 3.5)
+# For the Development.SABIModule components of FindPython
+cmake_minimum_required(VERSION 3.26)
 
 project(
     python-launcher
@@ -6,6 +7,7 @@ project(
     LANGUAGES CXX
 )
 
+# C++17 needed for std::filesystem
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
