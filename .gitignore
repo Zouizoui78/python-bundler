@@ -100,7 +100,9 @@ CTestTestfile.cmake
 _deps
 
 .vscode
+.python-bundler-cache
 build
+bundle
 app
 python
 dist
