@@ -11,6 +11,7 @@ PYTHON_RELEASE = int("{}{}".format(sys.version_info.major, sys.version_info.mino
 
 CACHE_DIR = os.path.join(os.path.dirname(sys.argv[0]), ".python-bundler-cache")
 CACHED_PYTHON_ZIP = os.path.join(CACHE_DIR, "python{}.zip".format(PYTHON_RELEASE))
+CACHE_PIP = os.path.join(CACHE_DIR, "pip")
 
 
 def parse_args():
@@ -137,7 +138,13 @@ def install_tkinter(python_path: str):
 
 
 def install_dep_from_pypi(dep_name: str, site_packages_path: str):
-    args = [sys.executable, "-m", "pip", "install", dep_name, "--target", site_packages_path]
+    args = [
+        sys.executable,
+        "-m", "pip",
+        "install", dep_name,
+        "--target", site_packages_path,
+        "--cache-dir", CACHE_PIP
+    ]
     subprocess.call(args)
 
 
