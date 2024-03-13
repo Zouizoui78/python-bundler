@@ -96,7 +96,7 @@ def print_download_progress_bar(chunk_n: int, chunk_size: int, total_size: int):
 
 
 def download_python():
-    python_url = "https://www.python.org/ftp/python/{}/python-{}-embed-amd64.zip".format(PYTHON_FULL_VERSION, PYTHON_FULL_VERSION)
+    python_url = "https://www.python.org/ftp/python/{0}/python-{0}-embed-amd64.zip".format(PYTHON_FULL_VERSION)
     print("Downloading '{}' to '{}'".format(python_url, CACHED_PYTHON_ZIP))
     urlretrieve(python_url, CACHED_PYTHON_ZIP, reporthook=print_download_progress_bar)
     print()
