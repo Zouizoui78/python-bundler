@@ -11,6 +11,11 @@ project(
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+add_compile_options(/W4 /WX)
+
+find_package(Python3 COMPONENTS Development.SABIModule REQUIRED)
+link_libraries(Python3::SABIModule)
+
 set(
     SRC
     launcher.cpp
@@ -18,10 +23,6 @@ set(
 
 add_executable(launcher ${SRC})
 add_executable(launcher-console ${SRC})
-
-find_package(Python3 COMPONENTS Development.SABIModule REQUIRED)
-target_link_libraries(launcher PRIVATE Python3::SABIModule)
-target_link_libraries(launcher-console PRIVATE Python3::SABIModule)
 
 # Hide console
 target_link_options(launcher PRIVATE /SUBSYSTEM:WINDOWS /ENTRY:mainCRTStartup)
