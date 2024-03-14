@@ -14,6 +14,33 @@ CACHED_PYTHON_ZIP = os.path.join(CACHE_DIR, "python{}.zip".format(PYTHON_RELEASE
 CACHE_PIP = os.path.join(CACHE_DIR, "pip")
 
 
+def validate_args(args):
+    if not os.path.isdir(args.app) or not os.path.exists(os.path.join(args.app, "main.py")):
+        raise Exception(
+            "Path '{}' must be a directory containing a file called 'main.py'"
+            .format(args.app)
+        )
+    elif not os.path.exists(args.app):
+        raise Exception(
+            "App '{}' : directory not found"
+            .format(args.app)
+        )
+
+    if not os.path.isfile(args.launcher):
+        raise Exception(
+            "Invalid launcher path : '{}' must be an existing file"
+            .format(args.launcher)
+        )
+
+    if os.path.isfile(args.output):
+        raise Exception(
+            "Can't create output dir : '{}' exists and is a file"
+            .format(args.output)
+        )
+    elif os.path.abspath(args.app) == os.path.abspath(args.output):
+        raise Exception("App and output must have different paths")
+
+
 def parse_args():
     argparser = argparse.ArgumentParser(
         description="Build the distributable package. If the packaged application contains a file called 'deps.json', the list of string it contains is used to get dependencies using pip."
@@ -56,6 +83,7 @@ def parse_args():
     if args.output == None:
         args.output = "bundle/{}".format(args.name)
 
+    validate_args(args)
     return args
 
 
