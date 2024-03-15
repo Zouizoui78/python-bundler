@@ -96,7 +96,7 @@ You need the following to build the wrapper :
 Clone and build the project :
 
     git clone https://github.com/Zouizoui78/python-bundler.git
-    cd python-launcher
+    cd python-bundler
     cmake -B build
     cmake --build build --target dist --config release
 
