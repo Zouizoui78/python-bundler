@@ -62,7 +62,7 @@ We can then run `test-app.exe` from anywhere and it will run the Python script `
 
     .\bundle\test-app\test-app.exe
 
-The script should output some text and open an empty window.
+The script should output some text telling about Python's paths.
 
 An icon can also be added to the launcher with the `--icon` flag of `bundler.py`.
 
