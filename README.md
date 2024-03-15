@@ -64,6 +64,10 @@ We can then run `test-app.exe` from anywhere and it will run the Python script `
 
 The script should output some text and open an empty window.
 
+An icon can also be added to the launcher with the `--icon` flag of `bundler.py`.
+
+See `bundler.py -h` for more information.
+
 ### Dependencies
 
 If the packaged application contains a file called `deps.json`, the list of strings it
