@@ -12,6 +12,7 @@ PYTHON_RELEASE = int("{}{}".format(sys.version_info.major, sys.version_info.mino
 CACHE_DIR = os.path.join(os.path.dirname(sys.argv[0]), ".python-bundler-cache")
 CACHED_PYTHON_ZIP = os.path.join(CACHE_DIR, "python{}.zip".format(PYTHON_RELEASE))
 CACHE_PIP = os.path.join(CACHE_DIR, "pip")
+CACHED_RCEDIT = os.path.join(CACHE_DIR, "rcedit.exe")
 
 
 def validate_args(args):
@@ -40,6 +41,9 @@ def validate_args(args):
     elif os.path.abspath(args.app) == os.path.abspath(args.output):
         raise Exception("App and output must have different paths")
 
+    if args.icon and not os.path.exists(args.icon):
+        raise Exception("Invalid icon path : '{}' file not found".format(args.icon))
+
 
 def parse_args():
     argparser = argparse.ArgumentParser(
@@ -66,6 +70,16 @@ def parse_args():
         "-n",
         "--name",
         help="Name of the application. Defaults to the name of the app directory, or, if set, to the name of the output directory."
+    )
+    argparser.add_argument(
+        "-i",
+        "--icon",
+        help="Path to a .ico file to be used as the launcher's icon."
+    )
+    argparser.add_argument(
+        "--no-zip",
+        help="True => don't zip the bundle.",
+        action="store_true"
     )
     args = argparser.parse_args()
 
@@ -123,11 +137,20 @@ def print_download_progress_bar(chunk_n: int, chunk_size: int, total_size: int):
     print("\r[{}{}] ({}%)".format('#' * part_done, ' ' * left, percent), end="")
 
 
+def download_file(url: str, destination: str):
+    print("Downloading '{}' to '{}'".format(url, destination))
+    urlretrieve(url, destination, reporthook=print_download_progress_bar)
+    print()
+
+
 def download_python():
     python_url = "https://www.python.org/ftp/python/{0}/python-{0}-embed-amd64.zip".format(PYTHON_FULL_VERSION)
-    print("Downloading '{}' to '{}'".format(python_url, CACHED_PYTHON_ZIP))
-    urlretrieve(python_url, CACHED_PYTHON_ZIP, reporthook=print_download_progress_bar)
-    print()
+    download_file(python_url, CACHED_PYTHON_ZIP)
+
+
+def download_rcedit():
+    rcedit_url = "https://github.com/electron/rcedit/releases/download/v2.0.0/rcedit-x64.exe"
+    download_file(rcedit_url, CACHED_RCEDIT)
 
 
 def install_portable_python(python_path: str):
@@ -205,6 +228,20 @@ def install_launcher(source: str, destination: str):
     print("Copied '{}' to '{}'".format(source, destination))
 
 
+def set_launcher_icon(launcher_path: str, icon_path: str):
+    print("Setting launcher's icon")
+    if os.path.exists(CACHED_RCEDIT):
+        print("Using cached rcedit")
+    else:
+        download_rcedit()
+    args = [CACHED_RCEDIT, launcher_path, "--set-icon", icon_path]
+    ret = subprocess.call(args)
+    if ret:
+        print("Failed to launcher's icon")
+    else:
+        print("Launcher's icon set to '{}'".format(icon_path))
+
+
 def compress_bundle(bundle_path: str):
     print("Creating archive '{}.zip'".format(bundle_path))
     shutil.make_archive(
@@ -228,9 +265,16 @@ def main():
     os.makedirs(args.output)
 
     python_path = os.path.join(args.output, "python")
+    launcher_destination = os.path.join(args.output, args.name + ".exe")
+
     install_portable_python(python_path)
     install_app(args.app, os.path.join(args.output, "app"))
-    install_launcher(args.launcher, os.path.join(args.output, args.name + ".exe"))
+    install_launcher(args.launcher, launcher_destination)
+    print()
+
+    if args.icon:
+        set_launcher_icon(launcher_destination, args.icon)
+
     print()
 
     deps_path = os.path.join(args.app, "deps.json")
@@ -239,7 +283,10 @@ def main():
             install_dependencies(json.load(f), python_path)
 
     cleanup_python_install(python_path)
-    compress_bundle(args.output)
+
+    if not args.no_zip:
+        compress_bundle(args.output)
+
     print("Done")
 
 
