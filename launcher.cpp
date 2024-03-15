@@ -24,6 +24,7 @@ int main(int argc, char** argv) {
     std::filesystem::path bundle_root =
         std::filesystem::path(argv[0]).parent_path();
 
+    std::wstring app_main = (bundle_root / "app" / "main.py").wstring();
     std::wstring python_home = (bundle_root / "python").wstring();
 
 #if PY_MINOR_VERSION >= 11
@@ -40,27 +41,23 @@ int main(int argc, char** argv) {
 #pragma warning(pop)
 #endif
 
-    std::vector<wchar_t*> args{
+    std::vector<std::wstring> args_storage{
         L"-E", // Ignore PYTHON* environment variables.
         L"-s"  // Don't add user site directory to sys.path.
     };
 
-    // 2 by default so that we don't pass arguments if app/main.py doesn't
-    // exist. In that case the interpreter will show its interactive prompt.
-    int args_size = 2;
-    std::vector<std::wstring> converted_args;
-
-    std::wstring app_main = (bundle_root / "app" / "main.py").wstring();
     if (std::filesystem::exists(app_main)) {
-        args.emplace_back(app_main.data());
-        converted_args.reserve(argc);
+        args_storage.emplace_back(app_main);
         for (int i = 1; i < argc; i++) {
-            converted_args.emplace_back(str_to_wstring(argv[i]));
-            args.emplace_back(converted_args.back().data());
+            args_storage.emplace_back(str_to_wstring(argv[i]));
         }
-        args_size = static_cast<int>(args.size());
+    }
+
+    std::vector<wchar_t*> args;
+    for (auto& str : args_storage) {
+        args.emplace_back(str.data());
     }
 
     Py_Initialize();
-    Py_Main(args_size, args.data());
+    Py_Main(static_cast<int>(args.size()), args.data());
 }
