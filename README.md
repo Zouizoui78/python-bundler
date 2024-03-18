@@ -4,10 +4,10 @@ This project's goal is to provide an easy way to bundle a Python application int
 
 It is composed of two parts :
 
-- The C++ project `python-launcher` that runs the Python code in a portable interpreter included in the bundle. This project creates two executables :
+- The C project `python-launcher` that runs the Python code in a portable interpreter included in the bundle. This project creates two executables :
   - `launcher.exe` is a normal Windows GUI-only program.
   - `launcher-console.exe` is a console program.
-- The Python script `bundler.py` that bundles the portable Python interpreter, the target app and the C++ wrapper.
+- The Python script `bundler.py` that bundles the portable Python interpreter, the target app and the C wrapper.
 
 The launcher uses Python's [stable ABI](https://docs.python.org/3/c-api/stable.html#stable-abi) so it should work with all versions of Python 3.x >= 3.2 (when the stable ABI was introduced).
 
