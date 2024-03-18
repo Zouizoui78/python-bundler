@@ -89,7 +89,7 @@ contains is used to get dependencies using `pip`. For instance, with the followi
 
 You need the following to build the wrapper :
 
-- MSVC with support for C++17 for `std::filesystem`
+- MSVC
 - CMake >= 3.26 for the `Development.SABIModule` component of `FindPython`
 - Python >= 3.2 for the stable ABI
 

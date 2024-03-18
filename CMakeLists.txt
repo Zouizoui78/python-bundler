@@ -3,13 +3,9 @@ cmake_minimum_required(VERSION 3.26)
 
 project(
     python-launcher
-    VERSION 0.2.0
-    LANGUAGES CXX
+    VERSION 0.5.0
+    LANGUAGES C
 )
-
-# C++17 needed for std::filesystem
-set(CMAKE_CXX_STANDARD 17)
-set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 add_compile_options(/W4 /WX)
 
@@ -18,7 +14,7 @@ link_libraries(Python3::SABIModule)
 
 set(
     SRC
-    launcher.cpp
+    launcher.c
 )
 
 add_executable(launcher ${SRC})
