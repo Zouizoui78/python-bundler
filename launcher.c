@@ -17,8 +17,7 @@ int main(int argc, char** argv) {
     // We don't check the returned value here because there is always at
     // least one '\' in argv[0].
 
-    wchar_t* bundle_root =
-        (wchar_t*)calloc(bundle_root_length + 1, sizeof(wchar_t));
+    wchar_t* bundle_root = calloc(bundle_root_length + 1, sizeof(wchar_t));
     int convert_result =
         MultiByteToWideChar(CP_UTF8, 0, argv[0], (int)bundle_root_length,
                             bundle_root, (int)bundle_root_length);
@@ -30,9 +29,9 @@ int main(int argc, char** argv) {
     wchar_t* app_main_relative = L"/app/main.py";
     wchar_t* python_home_relative = L"/python";
 
-    wchar_t* app_main = (wchar_t*)calloc(
+    wchar_t* app_main = calloc(
         bundle_root_length + wcslen(app_main_relative) + 1, sizeof(wchar_t));
-    wchar_t* python_home = (wchar_t*)calloc(
+    wchar_t* python_home = calloc(
         bundle_root_length + wcslen(python_home_relative) + 1, sizeof(wchar_t));
 
     wcscpy(app_main, bundle_root);
@@ -60,7 +59,7 @@ int main(int argc, char** argv) {
     // If app/main.py doesn't exist then we don't pass the user's CLI args to
     // the interpreter. In that case it will show its interactive prompt.
     size_t py_argc = file_exists(app_main) ? argc + 2 : 2;
-    wchar_t** py_argv = (wchar_t**)calloc(py_argc, sizeof(wchar_t*));
+    wchar_t** py_argv = calloc(py_argc, sizeof(wchar_t*));
     py_argv[0] = L"-E"; // Ignore PYTHON* environment variables.
     py_argv[1] = L"-s"; // Don't add user site directory to sys.path.
 
@@ -69,8 +68,7 @@ int main(int argc, char** argv) {
         for (int i = 1; i < argc; i++) {
             int current_py_arg = i + 2;
             size_t arg_length = strlen(argv[i]);
-            py_argv[current_py_arg] =
-                (wchar_t*)calloc(strlen(argv[i]), sizeof(wchar_t));
+            py_argv[current_py_arg] = calloc(strlen(argv[i]), sizeof(wchar_t));
             convert_result =
                 MultiByteToWideChar(CP_UTF8, 0, argv[i], (int)arg_length,
                                     py_argv[current_py_arg], (int)arg_length);
