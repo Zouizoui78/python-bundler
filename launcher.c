@@ -26,8 +26,8 @@ int main(int argc, char** argv) {
         exit(LAUNCHER_WSTR_ERROR);
     }
 
-    wchar_t* app_main_relative = L"/app/main.py";
-    wchar_t* python_home_relative = L"/python";
+    wchar_t* app_main_relative = L"\\app\\main.py";
+    wchar_t* python_home_relative = L"\\python";
 
     wchar_t* app_main = calloc(
         bundle_root_length + wcslen(app_main_relative) + 1, sizeof(wchar_t));
