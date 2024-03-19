@@ -3,7 +3,7 @@
 
 #include <windows.h> // For MultiByteToWideChar()
 
-enum ReturnCodes { LAUNCHER_SUCCESS, LAUNCHER_WSTR_ERROR };
+#define LAUNCHER_WSTR_ERROR -1
 
 int file_exists(wchar_t* path) {
     DWORD dwAttrib = GetFileAttributesW(path);
@@ -82,7 +82,7 @@ int main(int argc, char** argv) {
     }
 
     Py_Initialize();
-    Py_Main((int)py_argc, py_argv);
+    int py_ret = Py_Main((int)py_argc, py_argv);
 
     free(bundle_root);
     free(app_main);
@@ -92,5 +92,9 @@ int main(int argc, char** argv) {
     }
     free(py_argv);
 
-    return LAUNCHER_SUCCESS;
+    if (py_ret == 2) {
+        fprintf(stderr,
+                "Failed to run Python interpreter : invalid command line");
+    }
+    return py_ret;
 }
