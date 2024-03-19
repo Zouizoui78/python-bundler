@@ -1,5 +1,4 @@
 import lib
-import requests
 import site
 import sys
 
@@ -12,6 +11,7 @@ print(f"prefix = {sys.prefix}")
 print(f"executable = {sys.executable}")
 print(f"site-packages = {site.getsitepackages()}")
 
+import requests
 r = requests.get("http://example.com")
 print(f"http request status code = {r.status_code}")
 

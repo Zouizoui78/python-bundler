@@ -50,11 +50,15 @@ int main(int argc, char** argv) {
 #pragma warning(push)
 #pragma warning(disable : 4996)
 #endif
+    // Tell Python where to find its standard libs.
+    // Python computes paths like "HOME/Lib" or "HOME/DLLs" from it.
     Py_SetPythonHome(python_home);
 #if PY_MINOR_VERSION >= 11
 #pragma warning(pop)
 #endif
 
+    // If app/main.py doesn't exist then we don't pass the user's CLI args to
+    // the interpreter. In that case it will show its interactive prompt.
     size_t py_argc = file_exists(app_main) ? argc + 2 : 2;
     wchar_t** py_argv = (wchar_t**)calloc(py_argc, sizeof(wchar_t*));
     py_argv[0] = L"-E"; // Ignore PYTHON* environment variables.
